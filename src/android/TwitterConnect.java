@@ -61,6 +61,10 @@ public class TwitterConnect extends CordovaPlugin {
 			showUser(callbackContext);
 			return true;
 		}
+		if (action.equals("statusUpdate")) {
+			statusUpdate(callbackContext, args[0]);
+			return true;
+		}
 		return false;
 	}
 
@@ -109,13 +113,19 @@ public class TwitterConnect extends CordovaPlugin {
 		public UserService getCustomService() {
 			return getService(UserService.class);
 		}
+		public UpdateService getUpdateService() {
+			return getService(UpdateService.class);
+		}
 	}
 
 	interface UserService {
 		@GET("/1.1/users/show.json")
 		void show(@Query("user_id") long id, Callback<Response> cb);
 	}
-
+	interface UpdateService {
+		@GET("/1.1/statuses/update.json")
+		void update(@Query("status") String status, Callback<Response> cb);
+	}
 	private void showUser(final CallbackContext callbackContext) {
 		cordova.getThreadPool().execute(new Runnable() {
 			@Override
@@ -137,6 +147,35 @@ public class TwitterConnect extends CordovaPlugin {
 						callbackContext.error(exception.getLocalizedMessage());
 					}
 				});
+			}
+		});
+	}
+
+	private void statusUpdate(final CallbackContext callbackContext, String status) {
+		cordova.getThreadPool().execute(new Runnable() {
+			@Override
+			public void run() {
+				TweetComposer.Builder builder = new TweetComposer.Builder(this)
+					.text(status);
+				builder.show();
+				/*UpdateServiceApi twitterApiClient = new UpdateServiceApi(Twitter.getSessionManager().getActiveSession());
+				UpdateService updateService = twitterApiClient.getCustomUpdateService();
+				updateService.update(status, new Callback<Response>() {
+					@Override
+					public void success(Result<Response> result) {
+						try {
+							callbackContext.success(new JSONObject(new String(((TypedByteArray) result.response.getBody()).getBytes())));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+					@Override
+					public void failure(TwitterException exception) {
+						Log.v(LOG_TAG, "Twitter API Failed "+exception.getLocalizedMessage());
+						callbackContext.error(exception.getLocalizedMessage());
+					}
+				});
+				*/
 			}
 		});
 	}
