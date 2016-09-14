@@ -155,10 +155,7 @@ public class TwitterConnect extends CordovaPlugin {
 		cordova.getThreadPool().execute(new Runnable() {
 			@Override
 			public void run() {
-				TweetComposer.Builder builder = new TweetComposer.Builder(this)
-					.text(status);
-				builder.show();
-				/*UpdateServiceApi twitterApiClient = new UpdateServiceApi(Twitter.getSessionManager().getActiveSession());
+				UpdateServiceApi twitterApiClient = new UpdateServiceApi(Twitter.getSessionManager().getActiveSession());
 				UpdateService updateService = twitterApiClient.getCustomUpdateService();
 				updateService.update(status, new Callback<Response>() {
 					@Override
@@ -175,7 +172,6 @@ public class TwitterConnect extends CordovaPlugin {
 						callbackContext.error(exception.getLocalizedMessage());
 					}
 				});
-				*/
 			}
 		});
 	}
