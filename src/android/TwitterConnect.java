@@ -62,7 +62,7 @@ public class TwitterConnect extends CordovaPlugin {
 			return true;
 		}
 		if (action.equals("statusUpdate")) {
-			statusUpdate(callbackContext, args[0]);
+			statusUpdate(callbackContext, args.getString(0));
 			return true;
 		}
 		return false;
