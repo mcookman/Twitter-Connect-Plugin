@@ -73,4 +73,34 @@
 					   }];
 }
 
+- (void)statusUpdate:(CDVInvokedUrlCommand*)command
+{
+	NSString * status= [command argumentAtIndex:0];
+	TWTRAPIClient *apiClient = [[Twitter sharedInstance] APIClient];
+
+	NSDictionary *requestParameters = [NSDictionary dictionaryWithObjectsAndKeys:status, @"status", nil];
+	NSError *error = nil;
+	NSURLRequest *apiRequest = [apiClient URLRequestWithMethod:@"GET"
+														   URL:@"https://api.twitter.com/1.1/statuses/update.json"
+													parameters:requestParameters
+														 error:&error];
+
+	[apiClient sendTwitterRequest:apiRequest
+					   completion:^(NSURLResponse *response, NSData *data, NSError *error) {
+						   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+						   NSInteger _httpStatus = [httpResponse statusCode];
+
+						   CDVPluginResult *pluginResult = nil;
+						   NSLog(@"API Response :%@",response);
+						   if (error != nil) {
+							   pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
+						   } else if (_httpStatus == 200) {
+							   NSDictionary *resultDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+							   pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:resultDict];
+						   }
+						   [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+
+					   }];
+}
+
 @end
