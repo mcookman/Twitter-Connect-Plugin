@@ -157,13 +157,16 @@ public class TwitterConnect extends CordovaPlugin {
 	}
 
 	private void statusUpdate(final CallbackContext callbackContext, String status) {
+		TweetComposer.Builder builder = new TweetComposer.Builder(this)
+			.text(status);
+				
+		builder.show();
+		return;
+
 		cordova.getThreadPool().execute(new Runnable() {
 			@Override
 			public void run() {
-				TweetComposer.Builder builder = new TweetComposer.Builder(this)
-					.text(status);
 				
-				builder.show();
 				/*
 				UpdateServiceApi twitterApiClient = new UpdateServiceApi(Twitter.getSessionManager().getActiveSession());
 				UpdateService updateService = twitterApiClient.getCustomUpdateService();
