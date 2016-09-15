@@ -17,6 +17,7 @@ import android.content.Intent;
 
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit.client.Response;
@@ -113,19 +114,23 @@ public class TwitterConnect extends CordovaPlugin {
 		public UserService getCustomService() {
 			return getService(UserService.class);
 		}
+		/*
 		public UpdateService getUpdateService() {
 			return getService(UpdateService.class);
 		}
+		*/
 	}
 
 	interface UserService {
 		@GET("/1.1/users/show.json")
 		void show(@Query("user_id") long id, Callback<Response> cb);
 	}
+	/*
 	interface UpdateService {
 		@GET("/1.1/statuses/update.json")
 		void update(@Query("status") String status, Callback<Response> cb);
 	}
+	*/
 	private void showUser(final CallbackContext callbackContext) {
 		cordova.getThreadPool().execute(new Runnable() {
 			@Override
@@ -155,6 +160,11 @@ public class TwitterConnect extends CordovaPlugin {
 		cordova.getThreadPool().execute(new Runnable() {
 			@Override
 			public void run() {
+				TweetComposer.Builder builder = new TweetComposer.Builder(this)
+					.text(status);
+				
+				builder.show();
+				/*
 				UpdateServiceApi twitterApiClient = new UpdateServiceApi(Twitter.getSessionManager().getActiveSession());
 				UpdateService updateService = twitterApiClient.getCustomUpdateService();
 				updateService.update(status, new Callback<Response>() {
@@ -172,6 +182,7 @@ public class TwitterConnect extends CordovaPlugin {
 						callbackContext.error(exception.getLocalizedMessage());
 					}
 				});
+				*/
 			}
 		});
 	}
