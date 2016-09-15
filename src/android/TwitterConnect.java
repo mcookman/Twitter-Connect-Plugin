@@ -45,11 +45,12 @@ public class TwitterConnect extends CordovaPlugin {
 		return preferences.getString("TwitterConsumerSecret", "");
 	}
 
-	public boolean execute(final String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
+	public boolean execute( String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		Log.v(LOG_TAG, "Received: " + action);
 		this.action = action;
 		final Activity activity = this.cordova.getActivity();
-		final Context context = activity.getApplicationContext();
+		//final Context context = activity.getApplicationContext();
+		context = this.cordova.getActivity().getBaseContext();
 		cordova.setActivityResultCallback(this);
 		if (action.equals("login")) {
 			login(activity, callbackContext);
@@ -64,7 +65,7 @@ public class TwitterConnect extends CordovaPlugin {
 			return true;
 		}
 		if (action.equals("statusUpdate")) {
-			context = this.cordova.getActivity().getBaseContext();
+			
 			statusUpdate(callbackContext, args.getString(0));
 			return true;
 		}
@@ -148,7 +149,7 @@ public class TwitterConnect extends CordovaPlugin {
 		});
 	}
 
-	private void statusUpdate(final CallbackContext callbackContext, String status) {
+	private void statusUpdate(CallbackContext callbackContext, String status) {
 		callbackContext.success("Success");
 		//            Tweet text this way use when startActivity outside Activity.
         Intent builder = new TweetComposer.Builder(context).text(status).createIntent();
